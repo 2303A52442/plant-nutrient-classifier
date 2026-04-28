@@ -7,6 +7,7 @@ import os
 import numpy as np
 import json
 import tensorflow as tf
+from pathlib import Path
 from PIL import Image
 from sklearn.metrics import (
     classification_report, confusion_matrix,
@@ -14,18 +15,21 @@ from sklearn.metrics import (
 )
 
 IMG_SIZE = 128
-MODEL_PATH = 'plant_nutrient_classifier.h5'
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / 'plant_nutrient_classifier.h5'
+TEST_DIR = BASE_DIR / 'dataset' / 'test'
+METRICS_PATH = BASE_DIR / 'metrics.json'
 
 
 def load_test_data():
     """Load test images from dataset/test/ or fallback to Healthy/Nutrient folders."""
     images, labels, filenames = [], [], []
 
-    if os.path.exists('dataset/test'):
-        base = 'dataset/test'
+    if TEST_DIR.exists():
+        base = str(TEST_DIR)
         class_dirs = sorted(os.listdir(base))
     else:
-        base = '.'
+        base = str(BASE_DIR)
         class_dirs = ['Healthy', 'Nutrient']
 
     for idx, cls in enumerate(class_dirs):
@@ -124,7 +128,7 @@ def generate_metrics():
         'insights': insights,
     }
 
-    with open('metrics.json', 'w') as f:
+    with open(METRICS_PATH, 'w') as f:
         json.dump(metrics, f, indent=2)
 
     print(f"\nAccuracy:  {metrics['accuracy']}%")

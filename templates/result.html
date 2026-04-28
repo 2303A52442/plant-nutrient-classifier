@@ -3,104 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result — Plant Nutrient Classifier</title>
+    <title>Analysis Result — Plant AI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <div class="container">
-        <!-- Nav -->
-        <div class="nav-bar animate">
-            <a href="/" class="nav-link">← Back to Upload</a>
-            <a href="/metrics" class="nav-link">📊 Metrics</a>
-        </div>
+    <div class="container animate-in">
+        <header class="header">
+            <a href="/" class="nav-link" style="display: inline-block; margin-bottom: 14px;">
+                ← New analysis
+            </a>
+            <h1>Result</h1>
+        </header>
 
-        <!-- Header -->
-        <div class="header animate">
-            <span class="header-icon">🔬</span>
-            <h1>Analysis Result</h1>
-        </div>
-
-        <!-- Result Grid: Image + Info -->
-        <div class="result-grid animate animate-delay-1">
-            <!-- Uploaded Image -->
-            <div class="result-image-card">
-                <img src="{{ url_for('static', filename=image_path.replace('static/', '')) }}" alt="Uploaded leaf" class="result-image">
+        <main class="glass-card">
+            <div class="result-header">
+                <span class="result-tag 
+                    {% if prediction == 'Healthy' %}tag-healthy
+                    {% elif severity == 'Mild' %}tag-warning
+                    {% else %}tag-danger{% endif %}">
+                    {{ prediction }}
+                </span>
+                <h2 class="prediction-title">
+                    {% if prediction == 'Healthy' %}
+                        Plant looks healthy
+                    {% else %}
+                        Nutrient deficiency detected
+                    {% endif %}
+                </h2>
             </div>
 
-            <!-- Prediction Info -->
-            <div class="result-info-card">
-                <div>
-                    <p style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Prediction</p>
-                    <div class="prediction-label {{ 'healthy' if prediction == 'Healthy' else 'nutrient' }}">
-                        {% if prediction == 'Healthy' %}
-                            <span>✅</span> Healthy
-                        {% else %}
-                            <span>⚠️</span> Nutrient Deficiency
-                        {% endif %}
-                    </div>
-                </div>
-
-                <!-- Confidence Bar -->
-                <div class="confidence-bar-wrapper">
-                    <div class="confidence-label">
-                        <span>Confidence</span>
-                        <span style="font-weight: 600; color: var(--text-primary);">{{ confidence }}%</span>
-                    </div>
-                    <div class="confidence-bar">
-                        <div class="confidence-fill {{ 'healthy' if prediction == 'Healthy' else 'nutrient' }}" style="width: {{ confidence }}%;"></div>
-                    </div>
-                </div>
-
-                <!-- Probabilities -->
-                <div class="prob-grid">
-                    <div class="prob-item">
-                        <div class="prob-item-label">Healthy</div>
-                        <div class="prob-item-value healthy">{{ probabilities['Healthy'] }}%</div>
-                    </div>
-                    <div class="prob-item">
-                        <div class="prob-item-label">Nutrient Def.</div>
-                        <div class="prob-item-value nutrient">{{ probabilities['Nutrient Deficiency'] }}%</div>
-                    </div>
-                </div>
-
-                <!-- Severity -->
-                {% if severity %}
-                <div>
-                    <p style="color: var(--text-muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px;">Severity Level</p>
-                    <span class="severity-badge {{ severity|lower }}">
-                        {% if severity == 'Mild' %}💧{% elif severity == 'Moderate' %}🔶{% else %}🔴{% endif %}
-                        {{ severity }}
-                    </span>
-                </div>
-                {% endif %}
+            <div style="text-align: center; margin-bottom: 30px;">
+                <img src="{{ url_for('static', filename=image_path.replace('static/', '')) }}" 
+                     alt="Analyzed image" 
+                     style="max-width: 100%; border-radius: 12px; border: 1px solid var(--border);">
             </div>
-        </div>
 
-        <!-- Recommendation -->
-        <div class="rec-card animate animate-delay-2">
-            <div class="rec-title">
-                <span>💡</span> {{ recommendation.title }}
+            <div class="confidence-meter">
+                <div class="meter-label">
+                    <span>Confidence</span>
+                    <span style="color: var(--text);">{{ confidence }}%</span>
+                </div>
+                <div class="meter-bar">
+                    <div class="meter-fill" style="width: {{ confidence }}%;"></div>
+                </div>
             </div>
-            <p class="rec-message">{{ recommendation.message }}</p>
-            <ul class="rec-actions">
-                {% for action in recommendation.actions %}
-                <li>
-                    <span class="check">✓</span>
-                    {{ action }}
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
 
-        <!-- Try Again -->
-        <div style="text-align: center; margin-top: 32px;" class="animate animate-delay-3">
-            <a href="/" class="btn btn-secondary">🔄 Analyze Another Image</a>
-        </div>
+            {% if recommendation %}
+            <section class="rec-section">
+                <h3>Simple advice</h3>
+                <p style="font-size: 14px; color: var(--text-dim); margin-bottom: 15px;">
+                    {{ recommendation.message }}
+                </p>
+                <ul class="rec-list">
+                    {% for action in recommendation.actions %}
+                    <li>{{ action }}</li>
+                    {% endfor %}
+                </ul>
+            </section>
+            {% endif %}
 
-        <!-- Footer -->
-        <div class="footer">
-            Plant Nutrient Classifier • Threshold: 0.65 • MobileNetV2
-        </div>
+            <a href="/" class="btn btn-primary">Analyze Another Image</a>
+        </main>
+
+        <footer style="text-align: center; margin-top: 30px;">
+            <p style="color: var(--text-dim); font-size: 11px; opacity: 0.5;">
+                Threshold: 0.65 • MobileNetV2
+            </p>
+        </footer>
     </div>
 </body>
 </html>

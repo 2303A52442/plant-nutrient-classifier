@@ -18,15 +18,42 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 # === Load Model ===
 model = tf.keras.models.load_model('plant_nutrient_classifier.h5')
 
-# Class names — index 0 = Healthy, index 1 = Nutrient
-# This matches the alphabetical order used by both manual loading and flow_from_directory
-CLASS_NAMES = ['Healthy', 'Nutrient Deficiency']
+# Load class names from training mapping when available
+RAW_CLASS_NAMES = ['Healthy', 'Nutrient']
+if os.path.exists('class_indices.json'):
+    try:
+        with open('class_indices.json', 'r') as f:
+            class_indices = json.load(f)
+        RAW_CLASS_NAMES = [name for name, _idx in sorted(class_indices.items(), key=lambda item: item[1])]
+    except Exception:
+        RAW_CLASS_NAMES = ['Healthy', 'Nutrient']
+
+CANONICAL_LABELS = {
+    'healthy': 'Healthy',
+    'nutrient': 'Nutrient Deficiency',
+    'nutrient deficiency': 'Nutrient Deficiency'
+}
+
+def _canonical_label(name):
+    key = str(name).strip().lower()
+    return CANONICAL_LABELS.get(key, name)
+
+HEALTHY_INDEX = 0
+NUTRIENT_INDEX = 1
+for idx, name in enumerate(RAW_CLASS_NAMES):
+    if 'nutrient' in str(name).lower():
+        NUTRIENT_INDEX = idx
+    if 'healthy' in str(name).lower():
+        HEALTHY_INDEX = idx
+
+HEALTHY_LABEL = _canonical_label(RAW_CLASS_NAMES[HEALTHY_INDEX])
+NUTRIENT_LABEL = _canonical_label(RAW_CLASS_NAMES[NUTRIENT_INDEX])
 
 # === Step 4: Prediction Threshold ===
 # Higher threshold = fewer false positives (more precise)
 # Lower threshold = fewer false negatives (more sensitive)
-# 0.65 is a practical balance for agriculture use
-THRESHOLD = 0.65
+# 0.65 is the best balance found in threshold sweeping for this model
+THRESHOLD = float(os.getenv('NUTRIENT_THRESHOLD', '0.65'))
 
 
 # === Step 3: Correct Prediction Function ===
@@ -49,8 +76,8 @@ def predict_image(image_path):
     # Handle both softmax (2 outputs) and sigmoid (1 output)
     if prediction.shape[-1] == 2:
         # Softmax output: [prob_healthy, prob_nutrient]
-        healthy_prob = float(prediction[0][0])
-        nutrient_prob = float(prediction[0][1])
+        healthy_prob = float(prediction[0][HEALTHY_INDEX])
+        nutrient_prob = float(prediction[0][NUTRIENT_INDEX])
     else:
         # Sigmoid output: single probability for nutrient class
         nutrient_prob = float(prediction[0][0])
@@ -58,15 +85,15 @@ def predict_image(image_path):
 
     # Apply threshold on nutrient probability
     if nutrient_prob >= THRESHOLD:
-        label = CLASS_NAMES[1]  # Nutrient Deficiency
+        label = NUTRIENT_LABEL
         confidence = round(nutrient_prob * 100, 1)
     else:
-        label = CLASS_NAMES[0]  # Healthy
+        label = HEALTHY_LABEL
         confidence = round(healthy_prob * 100, 1)
 
     probabilities = {
-        'Healthy': round(healthy_prob * 100, 1),
-        'Nutrient Deficiency': round(nutrient_prob * 100, 1)
+        HEALTHY_LABEL: round(healthy_prob * 100, 1),
+        NUTRIENT_LABEL: round(nutrient_prob * 100, 1)
     }
 
     return label, confidence, probabilities
@@ -75,7 +102,7 @@ def predict_image(image_path):
 # === Step 6: Severity + Recommendations ===
 def get_severity(label, confidence):
     """Determine severity based on prediction and confidence."""
-    if label == CLASS_NAMES[0]:  # Healthy
+    if label == HEALTHY_LABEL:
         return None
 
     # For Nutrient Deficiency
@@ -89,7 +116,7 @@ def get_severity(label, confidence):
 
 def get_recommendation(label, severity):
     """Agriculture-specific recommendations based on prediction and severity."""
-    if label == CLASS_NAMES[0]:  # Healthy
+    if label == HEALTHY_LABEL:
         return {
             'title': 'Plant is Healthy',
             'message': 'Your plant appears healthy. Continue your current care routine.',

@@ -10,14 +10,13 @@
     <div class="container-wide">
         <!-- Nav -->
         <div class="nav-bar animate">
-            <a href="/" class="nav-link">← Back to Upload</a>
+            <a href="/" class="nav-link">← Back</a>
         </div>
 
         <!-- Header -->
         <div class="header animate">
-            <span class="header-icon">📊</span>
             <h1>Model Metrics</h1>
-            <p>Evaluation results and error analysis</p>
+            <p>Simple evaluation summary and error breakdown</p>
         </div>
 
         {% if metrics %}
@@ -44,7 +43,7 @@
 
         <!-- Confusion Matrix -->
         <div class="card animate animate-delay-2">
-            <div class="card-title"><span>🧮</span> Confusion Matrix</div>
+            <div class="card-title">Confusion Matrix</div>
             <table class="matrix-table">
                 <tr>
                     <th></th>
@@ -66,7 +65,7 @@
 
         <!-- Per-Class Metrics -->
         <div class="card animate animate-delay-2">
-            <div class="card-title"><span>📋</span> Per-Class Performance</div>
+            <div class="card-title">Per-Class Performance</div>
             <table class="data-table">
                 <thead>
                     <tr>
@@ -93,17 +92,17 @@
 
         <!-- Key Insights -->
         <div class="card animate animate-delay-3">
-            <div class="card-title"><span>🧠</span> Key Insights</div>
+            <div class="card-title">Key Insights</div>
             {% for insight in metrics.insights %}
             <div class="insight-item">
-                <span class="insight-icon">💡</span>
+                <span class="insight-icon">•</span>
                 <span>{{ insight }}</span>
             </div>
             {% endfor %}
 
             <!-- Error Analysis -->
             <div class="insight-item" style="margin-top: 16px;">
-                <span class="insight-icon">🔍</span>
+                <span class="insight-icon">•</span>
                 <span>
                     <strong>Error Analysis:</strong>
                     {{ metrics.total_errors }} misclassifications out of {{ metrics.total_test_samples }} test samples
@@ -117,7 +116,7 @@
         <!-- Sample Predictions -->
         {% if metrics.correct_samples %}
         <div class="card animate animate-delay-3">
-            <div class="card-title"><span>✅</span> Correct Predictions (Sample)</div>
+            <div class="card-title">Correct Predictions (Sample)</div>
             <table class="data-table">
                 <thead>
                     <tr><th>Image</th><th>True</th><th>Predicted</th><th>Confidence</th><th>Status</th></tr>
@@ -139,7 +138,7 @@
 
         {% if metrics.incorrect_samples %}
         <div class="card animate animate-delay-4">
-            <div class="card-title"><span>❌</span> Incorrect Predictions (Errors)</div>
+            <div class="card-title">Incorrect Predictions (Errors)</div>
             <table class="data-table">
                 <thead>
                     <tr><th>Image</th><th>True</th><th>Predicted</th><th>Confidence</th><th>Status</th></tr>
@@ -162,9 +161,9 @@
         {% else %}
         <!-- No Metrics Available -->
         <div class="empty-state animate animate-delay-1">
-            <span class="empty-state-icon">📊</span>
+            <span class="empty-state-icon">•</span>
             <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 4px;">No metrics data found</p>
-            <p>Run <code style="color: var(--accent); background: var(--accent-glow); padding: 2px 8px; border-radius: 4px;">python evaluate_model.py</code> to generate evaluation metrics.</p>
+            <p>Run <code style="color: var(--accent); background: var(--accent-soft); padding: 2px 8px; border-radius: 4px;">python evaluate_model.py</code> to generate evaluation metrics.</p>
         </div>
         {% endif %}
 

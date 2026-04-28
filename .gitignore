@@ -1,0 +1,14 @@
+__pycache__/
+*.pyc
+dataset/
+review/
+static/uploads/
+misclassified.csv
+metrics.json
+training_history.json
+class_indices.json
+run_batch_test.py
+run_batch_test_filtered.py
+copy_misclassified.py
+export_misclassified.py
+test_predict.py
