@@ -74,6 +74,15 @@ python app.py
 Open **http://127.0.0.1:5000** in your browser.
 
 ---
+## 📸 Demo
+
+### Upload Page
+<img width="975" height="924" alt="{4707FB1F-3B19-420E-97C2-920A7658ED62}" src="https://github.com/user-attachments/assets/f6b1d7c6-aee2-4a6e-bbdf-e8895cb67b17" />
+
+
+### Result Page
+<img width="788" height="764" alt="{1C46EC12-A688-42C2-938D-FF01B06807C9}" src="https://github.com/user-attachments/assets/2919f93d-b366-44d7-8931-dfe1cee7b17e" />
+
 
 ## 🧠 Key Technical Decisions
 
