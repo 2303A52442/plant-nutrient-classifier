@@ -1,0 +1,168 @@
+{
+  "accuracy": 83.8,
+  "precision": 91.9,
+  "recall": 83.8,
+  "f1_score": 86.4,
+  "confusion_matrix": [
+    [
+      89,
+      17
+    ],
+    [
+      2,
+      9
+    ]
+  ],
+  "class_names": [
+    "Healthy",
+    "Nutrient"
+  ],
+  "per_class": {
+    "Healthy": {
+      "precision": 97.8,
+      "recall": 84.0,
+      "f1": 90.4,
+      "support": 106
+    },
+    "Nutrient": {
+      "precision": 34.6,
+      "recall": 81.8,
+      "f1": 48.6,
+      "support": 11
+    }
+  },
+  "total_test_samples": 117,
+  "total_errors": 19,
+  "error_rate": 16.2,
+  "avg_confidence_correct": 86.5,
+  "avg_confidence_incorrect": 70.1,
+  "correct_samples": [
+    {
+      "filename": "1.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 89.9
+    },
+    {
+      "filename": "100.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 82.9
+    },
+    {
+      "filename": "104.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 78.6
+    },
+    {
+      "filename": "107.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 50.7
+    },
+    {
+      "filename": "108.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 87.9
+    },
+    {
+      "filename": "109.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 70.0
+    },
+    {
+      "filename": "115.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 89.9
+    },
+    {
+      "filename": "126.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 80.2
+    },
+    {
+      "filename": "129.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 71.9
+    },
+    {
+      "filename": "134.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Healthy",
+      "confidence": 93.1
+    }
+  ],
+  "incorrect_samples": [
+    {
+      "filename": "112.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 69.2
+    },
+    {
+      "filename": "119.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 73.7
+    },
+    {
+      "filename": "217.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 55.7
+    },
+    {
+      "filename": "255.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 63.6
+    },
+    {
+      "filename": "259.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 58.8
+    },
+    {
+      "filename": "272.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 70.3
+    },
+    {
+      "filename": "303.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 82.2
+    },
+    {
+      "filename": "388.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 63.5
+    },
+    {
+      "filename": "403.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 85.5
+    },
+    {
+      "filename": "437.jpg",
+      "true_label": "Healthy",
+      "predicted_label": "Nutrient",
+      "confidence": 59.8
+    }
+  ],
+  "insights": [
+    "Good performance at 83.8% accuracy. Room for improvement.",
+    "Well-calibrated: correct predictions avg 86.5% confidence vs 70.1% for incorrect.",
+    "Prediction distribution: Healthy=91, Nutrient=26 out of 117 samples."
+  ]
+}
