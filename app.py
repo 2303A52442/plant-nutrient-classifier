@@ -191,7 +191,7 @@ def index():
                                    probabilities=probabilities,
                                    severity=severity,
                                    recommendation=recommendation,
-                                   image_path=file_path)
+                                   filename=filename)
 
     return render_template('index.html')
 
@@ -206,5 +206,5 @@ def metrics():
     return render_template('metrics.html', metrics=metrics_data)
 
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
