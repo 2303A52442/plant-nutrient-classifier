@@ -1,18 +1,102 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Plant Nutrient Classifier — Upload a leaf image to detect nutrient deficiency using AI.">
     <title>Plant Nutrient Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
-    <h1>Upload a Leaf Image</h1>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required>
-        <button type="submit">Predict</button>
-    </form>
-    {% if prediction %}
-        <h2>Prediction: {{ prediction }}</h2>
-        <p>Confidence: {{ confidence|round(4) }}</p>
-        <img src="{{ image_path }}" alt="Uploaded Image" width="300">
-    {% endif %}
+    <div class="container">
+        <!-- Header -->
+        <div class="header animate">
+            <span class="header-icon">🌿</span>
+            <h1>Plant Nutrient Classifier</h1>
+            <p>Upload a leaf image to detect nutrient deficiency</p>
+            <span class="header-badge">AI-Powered • Binary Classification</span>
+        </div>
+
+        <!-- Error -->
+        {% if error %}
+        <div class="error-alert animate">
+            <span>⚠️</span> {{ error }}
+        </div>
+        {% endif %}
+
+        <!-- Upload Card -->
+        <form method="post" enctype="multipart/form-data" id="uploadForm">
+            <div class="card animate animate-delay-1">
+                <div class="card-title"><span>📤</span> Upload Leaf Image</div>
+
+                <div class="upload-area" id="uploadArea">
+                    <input type="file" name="file" accept="image/*" required class="file-input" id="fileInput">
+                    <span class="upload-icon">🍃</span>
+                    <p class="upload-text">Click or drag an image here</p>
+                    <p class="upload-subtext">Supports JPG, PNG • Max recommended: 128×128</p>
+
+                    <div class="preview-container" id="previewContainer">
+                        <img id="previewImg" class="preview-img" alt="Preview">
+                        <p class="preview-name" id="previewName"></p>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" id="submitBtn" disabled>
+                    🔍 Analyze Image
+                </button>
+            </div>
+        </form>
+
+        <!-- Navigation -->
+        <div class="nav-bar animate animate-delay-2">
+            <a href="/metrics" class="nav-link">📊 View Model Metrics</a>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            Plant Nutrient Classifier • MobileNetV2 • Binary Classification
+        </div>
+    </div>
+
+    <script>
+        const fileInput = document.getElementById('fileInput');
+        const uploadArea = document.getElementById('uploadArea');
+        const previewContainer = document.getElementById('previewContainer');
+        const previewImg = document.getElementById('previewImg');
+        const previewName = document.getElementById('previewName');
+        const submitBtn = document.getElementById('submitBtn');
+
+        fileInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const file = this.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewName.textContent = file.name;
+                    previewContainer.classList.add('active');
+                    uploadArea.classList.add('has-file');
+                    submitBtn.disabled = false;
+                    document.querySelector('.upload-icon').style.display = 'none';
+                    document.querySelector('.upload-text').style.display = 'none';
+                    document.querySelector('.upload-subtext').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('has-file');
+        });
+        uploadArea.addEventListener('dragleave', function() {
+            if (!fileInput.files.length) this.classList.remove('has-file');
+        });
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            fileInput.files = e.dataTransfer.files;
+            fileInput.dispatchEvent(new Event('change'));
+        });
+    </script>
 </body>
 </html>

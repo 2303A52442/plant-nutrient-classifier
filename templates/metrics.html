@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Metrics — Plant Nutrient Classifier</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container-wide">
+        <!-- Nav -->
+        <div class="nav-bar animate">
+            <a href="/" class="nav-link">← Back to Upload</a>
+        </div>
+
+        <!-- Header -->
+        <div class="header animate">
+            <span class="header-icon">📊</span>
+            <h1>Model Metrics</h1>
+            <p>Evaluation results and error analysis</p>
+        </div>
+
+        {% if metrics %}
+
+        <!-- Summary Cards -->
+        <div class="metrics-grid animate animate-delay-1">
+            <div class="metric-card">
+                <div class="metric-value">{{ metrics.accuracy }}%</div>
+                <div class="metric-label">Accuracy</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ metrics.precision }}%</div>
+                <div class="metric-label">Precision</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ metrics.recall }}%</div>
+                <div class="metric-label">Recall</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">{{ metrics.f1_score }}%</div>
+                <div class="metric-label">F1 Score</div>
+            </div>
+        </div>
+
+        <!-- Confusion Matrix -->
+        <div class="card animate animate-delay-2">
+            <div class="card-title"><span>🧮</span> Confusion Matrix</div>
+            <table class="matrix-table">
+                <tr>
+                    <th></th>
+                    <th>Pred: {{ metrics.class_names[0] }}</th>
+                    <th>Pred: {{ metrics.class_names[1] }}</th>
+                </tr>
+                {% for i in range(metrics.class_names|length) %}
+                <tr>
+                    <th>True: {{ metrics.class_names[i] }}</th>
+                    {% for j in range(metrics.class_names|length) %}
+                    <td class="{{ 'correct' if i == j else 'incorrect' }}">
+                        {{ metrics.confusion_matrix[i][j] }}
+                    </td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <!-- Per-Class Metrics -->
+        <div class="card animate animate-delay-2">
+            <div class="card-title"><span>📋</span> Per-Class Performance</div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Class</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1 Score</th>
+                        <th>Samples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cls in metrics.class_names %}
+                    <tr>
+                        <td style="font-weight: 600; color: var(--text-primary);">{{ cls }}</td>
+                        <td>{{ metrics.per_class[cls].precision }}%</td>
+                        <td>{{ metrics.per_class[cls].recall }}%</td>
+                        <td>{{ metrics.per_class[cls].f1 }}%</td>
+                        <td>{{ metrics.per_class[cls].support }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Key Insights -->
+        <div class="card animate animate-delay-3">
+            <div class="card-title"><span>🧠</span> Key Insights</div>
+            {% for insight in metrics.insights %}
+            <div class="insight-item">
+                <span class="insight-icon">💡</span>
+                <span>{{ insight }}</span>
+            </div>
+            {% endfor %}
+
+            <!-- Error Analysis -->
+            <div class="insight-item" style="margin-top: 16px;">
+                <span class="insight-icon">🔍</span>
+                <span>
+                    <strong>Error Analysis:</strong>
+                    {{ metrics.total_errors }} misclassifications out of {{ metrics.total_test_samples }} test samples
+                    ({{ metrics.error_rate }}% error rate).
+                    Avg confidence on correct: {{ metrics.avg_confidence_correct }}%,
+                    incorrect: {{ metrics.avg_confidence_incorrect }}%.
+                </span>
+            </div>
+        </div>
+
+        <!-- Sample Predictions -->
+        {% if metrics.correct_samples %}
+        <div class="card animate animate-delay-3">
+            <div class="card-title"><span>✅</span> Correct Predictions (Sample)</div>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Image</th><th>True</th><th>Predicted</th><th>Confidence</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for s in metrics.correct_samples[:5] %}
+                    <tr>
+                        <td>{{ s.filename }}</td>
+                        <td>{{ s.true_label }}</td>
+                        <td>{{ s.predicted_label }}</td>
+                        <td>{{ s.confidence }}%</td>
+                        <td><span class="badge-correct">Correct</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% if metrics.incorrect_samples %}
+        <div class="card animate animate-delay-4">
+            <div class="card-title"><span>❌</span> Incorrect Predictions (Errors)</div>
+            <table class="data-table">
+                <thead>
+                    <tr><th>Image</th><th>True</th><th>Predicted</th><th>Confidence</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                    {% for s in metrics.incorrect_samples %}
+                    <tr>
+                        <td>{{ s.filename }}</td>
+                        <td>{{ s.true_label }}</td>
+                        <td>{{ s.predicted_label }}</td>
+                        <td>{{ s.confidence }}%</td>
+                        <td><span class="badge-incorrect">Wrong</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        {% else %}
+        <!-- No Metrics Available -->
+        <div class="empty-state animate animate-delay-1">
+            <span class="empty-state-icon">📊</span>
+            <p style="font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 4px;">No metrics data found</p>
+            <p>Run <code style="color: var(--accent); background: var(--accent-glow); padding: 2px 8px; border-radius: 4px;">python evaluate_model.py</code> to generate evaluation metrics.</p>
+        </div>
+        {% endif %}
+
+        <!-- Footer -->
+        <div class="footer">
+            Plant Nutrient Classifier • Model Evaluation Dashboard
+        </div>
+    </div>
+</body>
+</html>
