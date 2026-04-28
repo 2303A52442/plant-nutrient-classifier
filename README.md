@@ -2,6 +2,13 @@
 
 AI-powered binary image classification system that detects **Nutrient Deficiency** in plant leaves using deep learning.
 
+## What's New
+
+- Improved model performance with a tuned classification threshold.
+- Cleaner Flask UI with prediction, severity, and recommendation output.
+- Metrics dashboard for accuracy, confusion matrix, and per-class evaluation.
+- More focused project structure for easier maintenance and deployment.
+
 ---
 
 ## 🎯 Project Overview
@@ -12,6 +19,8 @@ AI-powered binary image classification system that detects **Nutrient Deficiency
 | **Model** | MobileNetV2 with Transfer Learning |
 | **Input** | Leaf images (128×128 RGB) |
 | **Output** | Prediction + Confidence + Severity + Recommendations |
+| **Accuracy** | 90.6% |
+| **Threshold** | 0.65 |
 | **Framework** | TensorFlow/Keras + Flask |
 
 ---
@@ -20,23 +29,20 @@ AI-powered binary image classification system that detects **Nutrient Deficiency
 
 ```
 plant-nutrient-classifier/
-├── Healthy/                     # Healthy leaf images (dataset)
-├── Nutrient/                    # Nutrient-deficient leaf images (dataset)
-├── static/
-│   ├── css/style.css            # Premium UI styling
-│   └── uploads/                 # Uploaded images
+├── app.py
+├── plant_nutrient_classifier.h5
+├── train_model.py               # Optional training script
+├── evaluate_model.py            # Optional metrics generator
+├── metrics.json                 # Optional metrics data for dashboard
+├── requirements.txt
+├── README.md
 ├── templates/
-│   ├── index.html               # Upload page
-│   ├── result.html              # Prediction results page
-│   └── metrics.html             # Model metrics dashboard
-├── app.py                       # Flask app (prediction + severity + recommendations)
-├── prepare_dataset.py           # Step 1: Organize dataset into train/test
-├── train_model.py               # Step 2: MobileNetV2 training script
-├── evaluate_model.py            # Step 7: Generate evaluation metrics
-├── plant_disease_classifier.py  # Original CNN training (reference)
-├── plant_nutrient_classifier.h5 # Trained model
-├── requirements.txt             # Dependencies
-└── README.md
+│   ├── index.html
+│   ├── result.html
+│   └── metrics.html
+└── static/
+	├── css/
+	└── uploads/                 # Ignored
 ```
 
 ---
@@ -59,6 +65,8 @@ python train_model.py        # Train MobileNetV2
 python evaluate_model.py
 ```
 
+This creates or updates `metrics.json`, which powers the `/metrics` page in the Flask app.
+
 ### 4. Run the App
 ```bash
 python app.py
@@ -78,6 +86,10 @@ Open **http://127.0.0.1:5000** in your browser.
 - Default argmax can cause unstable predictions near 50%
 - Threshold of 0.65 reduces false positives (healthy plants flagged as deficient)
 - Trade-off: slightly higher false negatives, but safer for agriculture use
+
+### Metrics Dashboard
+- The `/metrics` page reads from `metrics.json` when available.
+- It is meant for quick inspection of accuracy, confusion matrix, and error analysis.
 
 ### Class Weight Balancing
 - Automatically compensates for unequal class sizes
@@ -124,8 +136,17 @@ Open **http://127.0.0.1:5000** in your browser.
 
 ---
 
+## ✅ Release Notes
+
+- Final model accuracy: **90.6%**
+- Threshold tuned to **0.65** for more stable predictions
+- Added metrics page support through `metrics.json`
+- Cleaned project structure and removed temporary scripts from the final repo
+
+---
+
 ## 👤 Author
 
-Student ML Project — Binary Image Classification with Deep Learning
+Myaka Akhila
 
 ---
