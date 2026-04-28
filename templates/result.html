@@ -33,7 +33,7 @@
             </div>
 
             <div style="text-align: center; margin-bottom: 30px;">
-                <img src="{{ url_for('static', filename=image_path.replace('static/', '')) }}" 
+                <img src="{{ url_for('static', filename='uploads/' + filename) }}" 
                      alt="Analyzed image" 
                      style="max-width: 100%; border-radius: 12px; border: 1px solid var(--border);">
             </div>
